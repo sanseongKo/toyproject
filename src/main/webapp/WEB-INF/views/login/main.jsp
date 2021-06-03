@@ -42,7 +42,7 @@
 				</div>
 				<br>
 				<a
-					href="https://kauth.kakao.com/oauth/authorize?client_id=f4978b1a2bf3652715a55bc2538a5dc9&redirect_uri=http://localhost:8080/login/kakaoLogin&response_type=code">
+					href="https://kauth.kakao.com/oauth/authorize?client_id=f4978b1a2bf3652715a55bc2538a5dc9&redirect_uri=http://localhost:8080/board/kakaoLogin&response_type=code">
 					kakao 로그인</a>
 			</c:otherwise>
 		</c:choose>
@@ -50,7 +50,3 @@
 
 </body>
 </html>
-
-<script>
-	console.log(${url});
-</script>

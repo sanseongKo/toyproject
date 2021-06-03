@@ -7,12 +7,8 @@ import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
 
@@ -40,13 +36,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.github.scribejava.core.model.OAuth2AccessToken;
+import com.test.board.dao.LoginDao;
 import com.test.board.dao.RegisterDao;
 import com.test.board.domain.ContentVO;
 import com.test.board.domain.MemberVO;
 import com.test.board.domain.ReplyVO;
 import com.test.board.domain.ResDays;
 import com.test.board.login.KakaoService;
-
 import com.test.board.login.NaverLoginBO;
 import com.test.board.service.BoardService;
 import com.test.board.service.ContentService;
@@ -55,7 +51,8 @@ import com.test.board.service.MypageService;
 @Controller
 @RequestMapping
 public class BoardController {
-	
+	@Autowired
+	private LoginDao loginDao;
 	@Autowired
 	private RegisterDao registerDao;
 	@Autowired
@@ -102,17 +99,30 @@ public class BoardController {
 	
 	//로그인 화면
 	@RequestMapping(value="/register", method = RequestMethod.POST)
-	public String registerPost(@ModelAttribute com.test.board.login.MemberVO memberVO, HttpSession session) {
+	public String registerPost(@ModelAttribute MemberVO memberVO, HttpSession session) {
 
 		System.out.println(memberVO.getEmail());
 		registerDao.register(memberVO);
 		
 		return "login/main";
 	}
+	//자체 로그인 
+	@RequestMapping(value="/siteLogin")
+	public String register(@RequestParam String email, @RequestParam String password, HttpSession session) {
+		int check = loginDao.loginCheck(email);
+		if(check == 0) {
+			return "login/regConfirm";
+		}else {
+			MemberVO memberVO = loginDao.login(email);
+			session.setAttribute("sessionId",memberVO); //세션 생성
+		}
 
+		return "list/main";
+		
+	}
 	//네이버 로그인 성공시 callback호출 메소드
 	@RequestMapping(value = "/callback", method = { RequestMethod.GET, RequestMethod.POST })
-	public String navercallback(Model model, @RequestParam String code, @RequestParam String state, HttpSession session) throws IOException, ParseException {
+	public String naverCallBack(Model model, @RequestParam String code, @RequestParam String state, HttpSession session) throws IOException, ParseException {
 
 		OAuth2AccessToken oauthToken;
 		oauthToken = naverLoginBO.getAccessToken(session, code, state);
@@ -138,11 +148,15 @@ public class BoardController {
 		String name = (String)response_obj.get("name");
 		System.out.println(nickname+ "," + email + "," + name);
 		//4.파싱 닉네임 세션으로 저장
-		session.setAttribute("sessionId",nickname); //세션 생성
-		model.addAttribute("result", apiResult);
-		session.setAttribute("email", email);
-		session.setAttribute("name", name);
-		return "login/naverReg";
+		int check = loginDao.loginCheck(email);
+		if(check == 0) {
+			return "login/regConfirm";
+		}else {
+			MemberVO memberVO = loginDao.login(email);
+			session.setAttribute("sessionId",memberVO); //세션 생성
+		}
+
+		return "list/main";
 	}
 
 	//카카오 로그인
@@ -155,7 +169,18 @@ public class BoardController {
 		String nickname = (String) userInfo.get("nickname");
 		session.setAttribute("sessionId", nickname);
 		session.setAttribute("email", email);
-		return "login/kakaoReg";
+	
+		int check = loginDao.loginCheck(email);
+		
+		if(check == 0) {
+			return "login/regConfirm";
+		}else {
+			MemberVO memberVO = loginDao.login(email);
+			session.setAttribute("sessionId",memberVO); //세션 생성
+		}
+		
+		
+		return "login/main";
 	}	
 
 	//로그아웃
@@ -167,13 +192,19 @@ public class BoardController {
 	}
 	
 	//회원가입 이동
-	@RequestMapping(value="/register", method = RequestMethod.GET)   
-	public String registerGet() {
+	@RequestMapping(value="/registerPage", method = RequestMethod.GET)   
+	public String registerPage() {
 
 
-		return "login/register";
+		return "login/regType";
 	}
+	//회원가입 이동
+		@RequestMapping(value="/register", method = RequestMethod.GET)   
+		public String registerGet() {
 
+
+			return "login/register";
+		}
 
 
 	//이메일 인증(ajax 비동기 요청 부분) 

@@ -3,7 +3,7 @@ package com.test.board.dao;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.test.board.login.MemberVO;
+import com.test.board.domain.MemberVO;
 
 public class RegisterDaoImpl implements RegisterDao {
 	private SqlSessionTemplate sqlSessionTemplate;
@@ -14,7 +14,7 @@ public class RegisterDaoImpl implements RegisterDao {
 	}
 	@Override
 	public void register(MemberVO memberVO) {
-		System.out.println(memberVO.getPhone());
+		
 		sqlSessionTemplate.insert("insertMember", memberVO);
 		
 		

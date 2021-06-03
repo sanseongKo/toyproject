@@ -38,8 +38,15 @@
 		select * from "MEMBER" where "UID" = #{uid}
 	</select>
 	
-
+	<!-- 로그인 회원 체크 -->
+	<select id="checkUser" parameterType="String" resultType="Integer">
+		select count(*) from "MEMBER" where "EMAIL" = #{email}
+	</select>
 	
+	<!-- 로그인 회원 가져오기 -->
+	<select id="loginUser" parameterType="String" resultType="memberVO">
+		select * from "MEMBER" where "EMAIL" = #{email}
+	</select>
 	
 	
 	<!-- 주소 쿼리 -->

@@ -17,7 +17,7 @@
 <br><br>
 <button name="login" onClick="location.href='<c:url value="/login"/>'">로그인</button>
 <button name="logout" onClick="location.href='<c:url value="/logout"/>'">로그아웃</button>
-<button name="regForm" onClick="location.href='<c:url value="/register"/>'">회원가입</button>
+<button name="regForm" onClick="location.href='<c:url value="/registerPage"/>'">회원가입</button>
 <br><br>
 
 <div>

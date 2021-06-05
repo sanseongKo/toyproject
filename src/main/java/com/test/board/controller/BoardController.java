@@ -42,6 +42,7 @@ import com.test.board.domain.ContentVO;
 import com.test.board.domain.MemberVO;
 import com.test.board.domain.ReplyVO;
 import com.test.board.domain.ResDays;
+import com.test.board.login.KakaoRegService;
 import com.test.board.login.KakaoService;
 import com.test.board.login.NaverLoginBO;
 import com.test.board.service.BoardService;
@@ -57,7 +58,8 @@ public class BoardController {
 	private RegisterDao registerDao;
 	@Autowired
 	private KakaoService kakaoService;	
-
+	@Autowired
+	private KakaoRegService kakaoRegService;
 	@Autowired
 	private NaverLoginBO naverLoginBO;
 	private String apiResult = null;
@@ -158,30 +160,74 @@ public class BoardController {
 
 		return "list/main";
 	}
+	//네이버 회원가입
+		@RequestMapping(value = "/callbackReg", method = { RequestMethod.GET, RequestMethod.POST })
+		public String naverCallBackReg(Model model, @RequestParam String code, @RequestParam String state, HttpSession session) throws IOException, ParseException {
 
+			OAuth2AccessToken oauthToken;
+			oauthToken = naverLoginBO.getAccessToken(session, code, state);
+			//1. 로그인 사용자 정보를 읽어온다.
+
+			apiResult = naverLoginBO.getUserProfile(oauthToken); //String형식의 json데이터
+			/** apiResult json 구조
+		   {"resultcode":"00",
+		   "message":"success",
+		   "response":{"id":"33666449","nickname":"shinn****","age":"20-29","gender":"M","email":"sh@naver.com","name":"\uc2e0\ubc94\ud638"}}
+			 **/
+			//2. String형식인 apiResult를 json형태로 바꿈
+			JSONParser parser = new JSONParser();
+			Object obj = parser.parse(apiResult);
+			JSONObject jsonObj = (JSONObject) obj;
+			//3. 데이터 파싱
+			//Top레벨 단계 _response 파싱
+			JSONObject response_obj = (JSONObject)jsonObj.get("response");
+
+			//response의 nickname값 파싱
+			String nickname = (String)response_obj.get("nickname");
+			String email = (String)response_obj.get("email");
+			String name = (String)response_obj.get("name");
+			System.out.println(nickname+ "," + email + "," + name);
+			session.setAttribute("sessionId", email);
+			session.setAttribute("name", name);
+
+			return "login/naverReg";
+		}
 	//카카오 로그인
 	@RequestMapping(value = "/kakaoLogin")
-	public String kakaoRegister(@RequestParam(value = "code", required = false) String code, Model model, HttpSession session) throws Exception{
+	public String kakaoLogin(@RequestParam(value = "code", required = false) String code, Model model, HttpSession session) throws Exception{
 
 		String access_Token = kakaoService.getAccessToken(code);
 		HashMap<String, Object> userInfo = kakaoService.getUserInfo(access_Token);
 		String email = (String) userInfo.get("email");
 		String nickname = (String) userInfo.get("nickname");
-		session.setAttribute("sessionId", nickname);
-		session.setAttribute("email", email);
-	
+		
+		
 		int check = loginDao.loginCheck(email);
 		
 		if(check == 0) {
 			return "login/regConfirm";
 		}else {
-			MemberVO memberVO = loginDao.login(email);
-			session.setAttribute("sessionId",memberVO); //세션 생성
+			MemberVO member = loginDao.login(email);
+			session.setAttribute("sessionId",member); //세션 생성
 		}
 		
 		
-		return "login/main";
+		return "list/main";
 	}	
+	//카카오 회원가입
+		@RequestMapping(value = "/kakaoReg", method=RequestMethod.GET)
+		public String kakaoRegister(@RequestParam(value = "code", required = false) String code, Model model, HttpSession session) throws Exception{
+
+			String access_Token = kakaoRegService.getAccessToken(code);
+			HashMap<String, Object> userInfo = kakaoService.getUserInfo(access_Token);
+			String email = (String) userInfo.get("email");
+			String nickname = (String) userInfo.get("nickname");
+			session.setAttribute("sessionId", email);
+			
+			
+			return "login/kakaoReg";
+		}	
+		
 
 	//로그아웃
 	@RequestMapping(value = "/logout", method = { RequestMethod.GET, RequestMethod.POST })
@@ -391,7 +437,7 @@ public class BoardController {
 		model.addAttribute("repList", contentService.repList(cid));
 		model.addAttribute("replyVO", new ReplyVO());
 		
-
+		
 		//오프라인 일때, 예약날짜list-> dayList 필요
 		if (contentVO.getOn_off()==2) {
 			//1. 우선 상품번호(cid)로  DB에서 예약일자를 ResDays객체에 담은 list로 받아온다.
@@ -409,8 +455,12 @@ public class BoardController {
 			System.out.println("dayList : "+dayList.toString());
 			model.addAttribute("dayList", dayList);//list
 		}
-				
-		
+		List<String> imgList = new ArrayList();
+		String image[] = boardService.imgList(cid).split("/");
+		for(int i = 0; i<image.length; i++) {
+			imgList.add(image[i]);
+		}
+		model.addAttribute("images", imgList);
 		//판매자 이름
 		int uid = contentVO.getUid();
 		MemberVO member = mypageService.selectFromUi(uid);
@@ -418,7 +468,8 @@ public class BoardController {
 		
 		return "/board/read";
 	}
-
+	
+	
 	
 	
 	

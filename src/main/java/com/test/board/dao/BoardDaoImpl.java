@@ -72,7 +72,11 @@ public class BoardDaoImpl implements BoardDao{
 	}
 	
 	
-	
+	@Override
+	public String imgList(int cid) {
+		
+		return sqlSessionTemplate.selectOne("imgList", cid);
+	}
 	
 	
 	

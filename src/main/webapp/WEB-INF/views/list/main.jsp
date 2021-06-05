@@ -15,9 +15,14 @@
 </div>
 <br><a href="<c:url value="/write"/>">새글</a>
 <br><br>
+<c:choose>
+<c:when test = "${sessionId == null}">
 <button name="login" onClick="location.href='<c:url value="/login"/>'">로그인</button>
-<button name="logout" onClick="location.href='<c:url value="/logout"/>'">로그아웃</button>
 <button name="regForm" onClick="location.href='<c:url value="/registerPage"/>'">회원가입</button>
+</c:when>
+<c:when test = "${sessionId != null}"><button name="logout" onClick="location.href='<c:url value="/logout"/>'">로그아웃</button> ${sessionId.nickname}님 환영 합니다.</c:when>
+</c:choose>
+
 <br><br>
 
 <div>

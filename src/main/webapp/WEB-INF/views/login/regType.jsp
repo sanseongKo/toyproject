@@ -23,12 +23,12 @@
 				<br>
 				<!-- 네이버 로그인 창으로 이동 -->
 				<div id="naver_id_login" style="text-align: center">
-					<a href="${url}"> <img width="232"
+					<a href="https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=hg_EaXjXCIJ_6Xpo51lT&redirect_uri=http%3A%2F%2Flocalhost%3A8080%2Fboard%2FcallbackReg&state=9365c5d6-1fee-4662-acce-05b4e5a34ed3"> <img width="232"
 						src="https://developers.naver.com/doc/review_201802/CK_bEFnWMeEBjXpQ5o8N_20180202_7aot50.png" /></a>
 				</div>
 				<br>
 				<a
-					href="https://kauth.kakao.com/oauth/authorize?client_id=f4978b1a2bf3652715a55bc2538a5dc9&redirect_uri=http://localhost:8080/login/kakaoLogin&response_type=code">
+					href="https://kauth.kakao.com/oauth/authorize?client_id=f4978b1a2bf3652715a55bc2538a5dc9&redirect_uri=http://localhost:8080/board/kakaoReg&response_type=code">
 					kakao 회원 가입</a>
 		
 	</center>
@@ -36,6 +36,3 @@
 </body>
 </html>
 
-<script>
-	console.log(${url});
-</script>

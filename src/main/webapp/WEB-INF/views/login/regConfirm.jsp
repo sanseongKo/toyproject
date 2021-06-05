@@ -9,7 +9,7 @@
 </head>
 <body>
 	가입된 정보가 없습니다. 회원가입 하시겠습니까?
-	<a href='<c:url value="/regType"/>'>회원가입</a>
+	<a href='<c:url value="/registerPage"/>'>회원가입</a>
 	<a href='<c:url value="/main"/>'>로그인</a>
 	<a href='<c:url value="/"/>'>홈으로 가기</a>
 </body>

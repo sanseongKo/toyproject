@@ -56,9 +56,10 @@
 		update ORDER2 set "STATE"=2 where "OID"=#{oid}
 	</update>
 	
-	
-	
-	
+	<!-- 이미지 처리 -->
+	<select id="imgList" parameterType="Integer" resultType="String">
+		select "VTHUMBNAIL" from "CONTENTS" where "CID" = #{cid}
+	</select>
 
 	
 	

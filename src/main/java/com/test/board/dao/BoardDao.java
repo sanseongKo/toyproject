@@ -44,8 +44,8 @@ public interface BoardDao {
 	public abstract void updateState(String oid);
 	
 
-	
-
+	//섬네일 이미지 및 이미지들 경로 가져오기
+	public abstract String imgList(int cid);
 	
 
 }

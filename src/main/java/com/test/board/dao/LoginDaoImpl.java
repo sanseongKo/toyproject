@@ -20,6 +20,7 @@ public class LoginDaoImpl implements LoginDao{
 	@Override
 	public MemberVO login(String email) {
 		
-		return sqlSessionTemplate.selectOne(statement, email);
+		return sqlSessionTemplate.selectOne("loginUser", email);
 	}
+	
 }

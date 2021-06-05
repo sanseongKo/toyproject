@@ -73,7 +73,11 @@ public class BoardServiceImpl implements BoardService{
 		boardDao.updateState(oid);
 	}
 	
-	
+	@Override
+	public String imgList(int cid) {
+		
+		return boardDao.imgList(cid);
+	}
 	
 	
 	

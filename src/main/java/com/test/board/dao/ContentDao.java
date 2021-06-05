@@ -36,7 +36,8 @@ public interface ContentDao {
 
 	// 판매글 삭제
 	public abstract int delete(ContentVO contentVO);
-
+	
+	public abstract void uploadContent(ContentVO contentVO);
 
 
 	// 댓글(후기) 기능

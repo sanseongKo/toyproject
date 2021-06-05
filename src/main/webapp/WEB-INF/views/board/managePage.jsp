@@ -15,7 +15,7 @@
 		<input type="hidden" id="value1"  value="1">
 	</div>
 	<div>
-		<button class = "manageUser" onclick="acyncMovePage2('/board/changeMenu')" >사용자 관리</button>
+		<button class = "manageUser" onclick="acyncMovePage2('/board/changeMenu')" >게시물 관리</button>
 		<input type="hidden" id="value2"  value="2">
 	</div>
 	<div class="changedMenu">

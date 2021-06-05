@@ -36,8 +36,9 @@ public interface ContentService {
 
 	// 판매글 삭제
 	public abstract int delete(ContentVO contentVO);
-
-
+	
+	//컨텐츠 등록
+	public abstract void uploadContent(ContentVO contentVO);
 	// 댓글 기능
 
 	public abstract List<ReplyVO> repList(int cid);

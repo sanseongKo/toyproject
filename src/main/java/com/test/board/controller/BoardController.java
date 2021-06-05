@@ -34,6 +34,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.github.scribejava.core.model.OAuth2AccessToken;
 import com.test.board.dao.LoginDao;
@@ -658,59 +659,35 @@ public class BoardController {
 
 	// 새 글 등록 요청
 	@RequestMapping(value = "/write", method = RequestMethod.POST)
-	public String write(ContentVO contentVO, BindingResult bindingResult) throws Exception {
+	public String write(@ModelAttribute ContentVO contentVO, MultipartHttpServletRequest request, 
+			@RequestParam("file") MultipartFile[] file, BindingResult bindingResult) throws Exception {
 		if (bindingResult.hasErrors()) { // 사용자가 입력한 값 중 타입이 맞지 않거나 null 값인 경우 예외처리
 			return "/board/write";
 		}
+		System.out.println(file[0]);
 		
-		/* 첨부 파일 */
-		String file_name = null;
-		String cthumbnail = null;
-		String pic_content = null;
-		
-		MultipartFile uploadFile = contentVO.getUploadFile();
-		MultipartFile cthumbFile = contentVO.getCthumbFile();
-		MultipartFile picFile = contentVO.getPicFile();
-		
-		System.out.println(uploadFile);
-		System.out.println(cthumbFile);
-		System.out.println(picFile);
-
-		if (!uploadFile.isEmpty()) {
-			String orgFileName = uploadFile.getOriginalFilename();
-			String ext = FilenameUtils.getExtension(orgFileName);
-			UUID uuid = UUID.randomUUID();
-			file_name = uuid + "." + ext;
-			uploadFile.transferTo(new File("D:\\file\\" + file_name));
+		String uploadPath = ("C:/study/images"); 
+		System.out.println(uploadPath);
+		String fileOriginName = ""; 
+		String fileMultiName = ""; 
+		for(int i=0; i<file.length; i++) { 
+			fileOriginName = file[i].getOriginalFilename(); 
+			System.out.println("기존 파일명 : "+fileOriginName); 
 			
-		} else {
-			file_name = "";
+			//확장자명
+			String extension = fileOriginName.split("\\.")[1]; //fileOriginName에 날짜+.+확장자명으로 저장시킴. 
+			//fileOriginName = formatter.format(now.getTime())+"."+extension; 
+			System.out.println(extension);
+			System.out.println("변경된 파일명 : "+fileOriginName);
+			File f = new File(uploadPath+"\\"+fileOriginName); 
+			file[i].transferTo(f); 
+			if(i==0) { fileMultiName += fileOriginName; 
+			} else{ fileMultiName += "/"+fileOriginName; 
+			}
+			System.out.println(fileMultiName);
 		}
-		if (!cthumbFile.isEmpty()) {
-			String orgFileName = cthumbFile.getOriginalFilename();
-			String ext = FilenameUtils.getExtension(orgFileName);
-			UUID uuid = UUID.randomUUID();
-			cthumbnail = uuid + "." + ext;
-			cthumbFile.transferTo(new File("D:\\file\\" + cthumbnail));
-		} else {
-			cthumbnail = "";
-		}
-		if (!picFile.isEmpty()) {
-			String orgFileName = picFile.getOriginalFilename();
-			String ext = FilenameUtils.getExtension(orgFileName);
-			UUID uuid = UUID.randomUUID();
-			pic_content = uuid + "." + ext;
-			picFile.transferTo(new File("D:\\file\\" + pic_content));
-			System.out.println(picFile);
-		} else {
-			pic_content = "";
-		}
-
-		contentVO.setFile_name(file_name);
-		contentVO.setCthumbnail(cthumbnail);
-		contentVO.setPic_content(pic_content);
-		
-		contentService.classInsert(contentVO);
+		contentVO.setVthumbnail(fileMultiName);
+		contentService.uploadContent(contentVO);
 		return "redirect:/";
 	}
 
@@ -787,9 +764,9 @@ public class BoardController {
        return "board/write";
        }
        else if(value.equals(value2)) {
-       return "user";
+       return "board/manageContent";
        }
-       return "managePage";
+       return "board/managePage";
     }
     
     @RequestMapping(value="/managePage")

@@ -93,7 +93,11 @@ public class ContentDaoImpl implements ContentDao{
 	public int delete(ContentVO contentVO) {
 		return sqlSessionTemplate.delete("delete", contentVO);
 	}
-
+	@Override
+	public void uploadContent(ContentVO contentVO) {
+		sqlSessionTemplate.insert("upContent", contentVO);
+		
+	}
 
 	// 댓글기능
 

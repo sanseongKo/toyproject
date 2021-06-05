@@ -94,5 +94,11 @@ public class ContentServiceImpl implements ContentService{
 	public int repDelete(int rid) {
 		return contentDao.repDelete(rid);
 	}
-
+	
+	//컨텐츠 등록
+	@Override
+	public void uploadContent(ContentVO contentVO) {
+		contentDao.uploadContent(contentVO);
+		
+	}
 }

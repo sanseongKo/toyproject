@@ -71,8 +71,8 @@ public class ContentServiceImpl implements ContentService{
 	}
 
 	@Override
-	public int delete(ContentVO contentVO) {
-		return contentDao.delete(contentVO);
+	public int delete(int cid) {
+		 return contentDao.delete(cid);
 	}
 
 	@Override
@@ -100,5 +100,15 @@ public class ContentServiceImpl implements ContentService{
 	public void uploadContent(ContentVO contentVO) {
 		contentDao.uploadContent(contentVO);
 		
+	}
+	@Override
+	public List<ContentVO> manageList() {
+		
+		return contentDao.manageList();
+	}
+	@Override
+	public List<ContentVO> manageListByVendor(String search) {
+		
+		return contentDao.manageListByVendor(search);
 	}
 }

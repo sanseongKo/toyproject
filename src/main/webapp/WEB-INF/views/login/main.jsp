@@ -14,7 +14,7 @@
 	<br>
 	<!-- Naver Login -->
 	<center>
-		
+			<form action="<c:url value="siteLogin"/>" method = "post">
 				<h2>로그인</h2>
 				<input type="text" name="id" id="id" class="w3-input w3-border"
 					placeholder="아이디" value="${id}">
@@ -24,7 +24,7 @@
 				<br>
 				<input type="submit" value="로그인" >
 				<br>
-
+			</form>
 				<br>
 				<!-- 네이버 로그인 창으로 이동 -->
 				<div id="naver_id_login" style="text-align: center">

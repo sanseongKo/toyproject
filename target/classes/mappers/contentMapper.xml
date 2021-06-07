@@ -53,7 +53,7 @@
 		insert into "CONTENTS" ("CID", "BIG_NAME", "SMALL_NAME", "UID", "ON_OFF", "ATT_NUM", "PRICE", "AREA",
 					"TITLE", "CONTENT", "VIDEO", "VTHUMBNAIL", "CTHUMBNAIL", "PIC_CONTENT", "FILE_NAME", "CONDATE")
 		values(CID_SEQ.nextval, #{big_name}, #{small_name}, #{uid}, #{on_off}, #{att_num}, #{price}, #{area}, 
-				#{title}, #{content}, #{video}, #{vthumbnail}, 11, 11, 11, sysdate)
+				#{title}, #{content}, #{video}, #{vthumbnail}, #{cthumbnail}, 11, 11, sysdate)
 	</insert>
 	
 	<insert id="classInsert"> 
@@ -80,7 +80,7 @@
 	</update>
 	
 	<!-- 글 삭제 -->
-	<delete id="delete"> 
+	<delete id="deleteCon" parameterType="Integer"> 
 		delete from "CONTENTS" where "CID" = #{cid}
 	</delete>
 	
@@ -111,8 +111,15 @@
 	</delete>
 	
 	
-
-
+	<select id="manageList" resultType="contentVO">
+	SELECT B."BIG_NAME", B."SMALL_NAME", B."ON_OFF", A."NICKNAME", B."ATT_NUM", B."PRICE", B."CONDATE", B."TITLE", B."CID"
+               FROM MEMBER A , CONTENTS B WHERE A."UID"= B."UID"
+	</select>
+	
+	<select id="manageListByVendor" parameterType="String" resultType="contentVO">
+	SELECT B."BIG_NAME", B."SMALL_NAME", B."ON_OFF", A."NICKNAME", B."ATT_NUM", B."PRICE", B."CONDATE", B."TITLE", B."CID"
+               FROM MEMBER A , CONTENTS B WHERE A."UID"= B."UID" AND "NICKNAME" LIKE '%'||#{search}||'%'
+	</select>
 	<resultMap id="ReplyResultMap" type="ReplyVO">
 		<id property="rid" column="rid" />
 		<id property="uid" column="uid" />
@@ -136,6 +143,7 @@
 		<result property="file_name" column="file_name" />
 		<result property="price" column="price" />
 		<result property="condate" column="condate" />
+		<result property="search" column="search" />
 	</resultMap>
 </mapper>
 

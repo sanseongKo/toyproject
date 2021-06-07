@@ -90,8 +90,8 @@ public class ContentDaoImpl implements ContentDao{
 	}
 
 	@Override
-	public int delete(ContentVO contentVO) {
-		return sqlSessionTemplate.delete("delete", contentVO);
+	public int delete(int cid) {
+		return sqlSessionTemplate.delete("deleteCon", cid);
 	}
 	@Override
 	public void uploadContent(ContentVO contentVO) {
@@ -120,5 +120,15 @@ public class ContentDaoImpl implements ContentDao{
 	public int repDelete(int rid) {
 		return sqlSessionTemplate.delete("repDelete", rid);
 	}
-
+	
+	@Override
+	public List<ContentVO> manageList() {
+		
+		return sqlSessionTemplate.selectList("manageList");
+	}
+	@Override
+	public List<ContentVO> manageListByVendor(String search) {
+		System.out.println("dao: " + search);
+		return sqlSessionTemplate.selectList("manageListByVendor", search);
+	}
 }

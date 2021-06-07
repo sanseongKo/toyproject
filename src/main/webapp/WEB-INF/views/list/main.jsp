@@ -1,7 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-    
+<%@ include file="/WEB-INF/views/board/onRead.jsp"%>
+<%@taglib uri="http://www.springframework.org/tags" prefix="spring"%> 
 <!DOCTYPE html>
 <html>
 <head>
@@ -10,7 +11,7 @@
 </head>
 <body>
 <div>
-	<a href="<c:url value="/onofflist?on_off=1" />">온라인</a> / 
+	<a href="<c:url value="/onofflist?on_off=1" />">온라인</a>  
 	<a href="<c:url value="/onofflist?on_off=2" />">오프라인</a>
 </div>
 <br><a href="<c:url value="/write"/>">새글</a>
@@ -32,7 +33,8 @@
 	         <c:choose>
 	         	<c:when test="${board.cthumbnail ne null}">
 	         		<tr>
-	            		<td><img src="/board/imgRead/${board.cthumbnail}?fileName=${board.cthumbnail}" width=100 height=100></td>
+	            		<td><img
+							src="<spring:url value="/image/${board.cthumbnail}"/>" style="width: 300px; height: 100px" /></td>
 	            	</tr>
 	         	</c:when>
 	         	<c:otherwise>

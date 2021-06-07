@@ -35,10 +35,12 @@ public interface ContentService {
 	public abstract int update(ContentVO contentVO);
 
 	// 판매글 삭제
-	public abstract int delete(ContentVO contentVO);
+	public abstract int delete(int cid);
 	
 	//컨텐츠 등록
 	public abstract void uploadContent(ContentVO contentVO);
+	
+	public abstract List<ContentVO> manageList();
 	// 댓글 기능
 
 	public abstract List<ReplyVO> repList(int cid);
@@ -48,5 +50,7 @@ public interface ContentService {
 	public abstract int repUpdate(ReplyVO replyVO);
 
 	public abstract int repDelete(int rid);
+	
+	public abstract List<ContentVO> manageListByVendor(String search);
 
 }

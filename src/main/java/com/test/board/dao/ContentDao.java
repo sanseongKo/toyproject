@@ -35,10 +35,13 @@ public interface ContentDao {
 	public abstract int update(ContentVO contentVO);
 
 	// 판매글 삭제
-	public abstract int delete(ContentVO contentVO);
+	public abstract int delete(int cid);
 	
 	public abstract void uploadContent(ContentVO contentVO);
-
+	
+	public abstract List<ContentVO> manageList();
+	
+	public abstract List<ContentVO> manageListByVendor(String search);
 
 	// 댓글(후기) 기능
 

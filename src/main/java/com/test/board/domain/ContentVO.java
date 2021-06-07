@@ -26,6 +26,7 @@ public class ContentVO {
 	private MultipartFile uploadFile;
 	private MultipartFile cthumbFile;
 	private MultipartFile picFile;
+	private String nickName;
 	
 	public ContentVO() {}
 
@@ -205,6 +206,15 @@ public class ContentVO {
 
 	public void setPicFile(MultipartFile picFile) {
 		this.picFile = picFile;
+	}
+	
+
+	public String getNickName() {
+		return nickName;
+	}
+
+	public void setNickName(String nickName) {
+		this.nickName = nickName;
 	}
 
 	@Override

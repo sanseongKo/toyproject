@@ -22,8 +22,6 @@
 		
 	</div>
 	
-	<a href = ""></a>
-	
 	
 	
 <script>
@@ -47,7 +45,7 @@
         $.ajax(ajaxOption).done(function(data){
         	$(".changedMenu").children().remove();
             $(".changedMenu").html(data);
-            console.log(data);
+          
       	
             
         });
@@ -57,7 +55,7 @@
     
     	var clickData2 = $("#value2").val();
     
-    	
+    	console.log(clickData2);
       
        var allData = {value: clickData2}
         var ajaxOption = {

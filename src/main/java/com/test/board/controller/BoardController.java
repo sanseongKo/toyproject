@@ -110,7 +110,7 @@ public class BoardController {
 		return "login/main";
 	}
 	//자체 로그인 
-	@RequestMapping(value="/siteLogin")
+	@RequestMapping(value="/siteLogin", method = RequestMethod.POST)
 	public String register(@RequestParam String email, @RequestParam String password, HttpSession session) {
 		int check = loginDao.loginCheck(email);
 		if(check == 0) {
@@ -338,7 +338,7 @@ public class BoardController {
 		List<ContentVO> list = contentService.mainList();
 		model.addAttribute("list",list);
 		System.out.println(list);
-		
+	
 		return "list/main";
 	}
 	
@@ -664,12 +664,13 @@ public class BoardController {
 		if (bindingResult.hasErrors()) { // 사용자가 입력한 값 중 타입이 맞지 않거나 null 값인 경우 예외처리
 			return "/board/write";
 		}
-		System.out.println(file[0]);
+		
 		
 		String uploadPath = ("C:/study/images"); 
 		System.out.println(uploadPath);
 		String fileOriginName = ""; 
 		String fileMultiName = ""; 
+		String thumbnail="";
 		for(int i=0; i<file.length; i++) { 
 			fileOriginName = file[i].getOriginalFilename(); 
 			System.out.println("기존 파일명 : "+fileOriginName); 
@@ -681,11 +682,15 @@ public class BoardController {
 			System.out.println("변경된 파일명 : "+fileOriginName);
 			File f = new File(uploadPath+"\\"+fileOriginName); 
 			file[i].transferTo(f); 
-			if(i==0) { fileMultiName += fileOriginName; 
+			
+			if(i==0) { 
+				fileMultiName += fileOriginName; 
+				thumbnail += fileOriginName;
 			} else{ fileMultiName += "/"+fileOriginName; 
 			}
 			System.out.println(fileMultiName);
 		}
+		contentVO.setCthumbnail(thumbnail);
 		contentVO.setVthumbnail(fileMultiName);
 		contentService.uploadContent(contentVO);
 		return "redirect:/";
@@ -736,27 +741,21 @@ public class BoardController {
 		return "/board/delete";
 	}
 
-	@RequestMapping(value="/delete/{cid}", method = RequestMethod.POST)
-	public String delete(@PathVariable int cid, String password, Model model) {
-		int rowCount;
-		ContentVO contentVO = new ContentVO();
-		contentVO.setCid(cid);
-		//contentVO.setPassword(password);
-
-		rowCount = contentService.delete(contentVO);
-
-		if(rowCount == 0) {
-			model.addAttribute("cid", cid);
-			//model.addAttribute("msg", "비밀번호가 일치하지 않습니다.");
-			return "/board/delete";
-		} else {
-			return "redirect:/";
-		}
+	@RequestMapping(value="/delete", method = RequestMethod.POST)
+	
+	public String deleteCon(@RequestParam(value="value")int cid, Model model) {
+			contentService.delete(cid);
+			System.out.println(cid);
+			 List contentList = new ArrayList<>();
+	    	   contentList = contentService.manageList();
+	    	   model.addAttribute("manage", contentList);
+			return "/board/manageList";
+		
 	}
 	
 	// 관리자 페이지
 	@RequestMapping(value = "/changeMenu", method=RequestMethod.POST)
-    public String changeMenuUpload(@RequestParam(value="value")String value) {
+    public String changeMenuUpload(@RequestParam(value="value")String value, Model model) {
        System.out.println(value);
        String value1 = "1";
        String value2 = "2";
@@ -764,7 +763,10 @@ public class BoardController {
        return "board/write";
        }
        else if(value.equals(value2)) {
-       return "board/manageContent";
+    	   List contentList = new ArrayList<>();
+    	   contentList = contentService.manageList();
+    	   model.addAttribute("manage", contentList);
+       return "board/manageList";
        }
        return "board/managePage";
     }
@@ -774,6 +776,19 @@ public class BoardController {
        return "board/managePage";
     }
 
-	// 글 삭제 요청을 처리할 메서드
+	// 
+    @RequestMapping(value="/search", method=RequestMethod.POST)
+    public String search(@RequestParam(value="value")String search,@RequestParam(value="on_off_option")String on_off, Model model) {
+    	
+    	if(on_off == null) {
+    	List contentList = new ArrayList<>();
+ 	   contentList = contentService.manageListByVendor(search);
+ 	   model.addAttribute("manage", contentList);
+ 	   model.addAttribute("search", search);
+    	}else if(on_off.equals("1")){
+    		
+    	}
+ 	   return "board/manageList";
+    }
 
 }
